@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ToApps</title>
+<meta name="description" content="ToApps — small, focused apps made with care. Featuring ToEat, plus what's next from the studio.">
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --paper:#F2F0EB; --paper-2:#E9E5DE; --surface:#FBFAF6;
+    --ink:#23201B; --ink-soft:#45403A; --muted:#6C665D;
+    --hair:#DCD7CD; --hair-2:#C9C3B7; --spot:#FFFDF8;
+    --shadow:0 30px 60px -28px rgba(35,32,27,.36);
+    --shadow-sm:0 12px 30px -16px rgba(35,32,27,.28);
+    --grain-op:.04; --skeleton-a:#E6E2D9; --skeleton-b:#F4F1EB;
+    --bezel:#100D0A;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --paper:#16130F; --paper-2:#1D1914; --surface:#201C16;
+    --ink:#F0EDE5; --ink-soft:#D3CDC2; --muted:#A49D90;
+    --hair:#322C23; --hair-2:#443D31; --spot:#FBF3E4;
+    --shadow:0 32px 66px -26px rgba(0,0,0,.72);
+    --shadow-sm:0 14px 34px -18px rgba(0,0,0,.6);
+    --grain-op:.055; --skeleton-a:#221E17; --skeleton-b:#2B261E;
+    --bezel:#0A0806;
+  }}
+  :root[data-theme="dark"]{
+    --paper:#16130F; --paper-2:#1D1914; --surface:#201C16;
+    --ink:#F0EDE5; --ink-soft:#D3CDC2; --muted:#A49D90;
+    --hair:#322C23; --hair-2:#443D31; --spot:#FBF3E4;
+    --shadow:0 32px 66px -26px rgba(0,0,0,.72);
+    --shadow-sm:0 14px 34px -18px rgba(0,0,0,.6);
+    --grain-op:.055; --skeleton-a:#221E17; --skeleton-b:#2B261E;
+    --bezel:#0A0806;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth; }
+  body{ margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Instrument Sans",system-ui,sans-serif; font-size:17px; line-height:1.6; overflow-x:hidden; }
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *,*::before,*::after{animation:none !important; transition-duration:.001ms !important;} }
+
+  body::before{ content:""; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:var(--grain-op);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  ::selection{ background:var(--ink); color:var(--paper); }
+  a{ color:inherit; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:3px; border-radius:3px; }
+
+  .wrap{ width:min(1120px,100% - 48px); margin-inline:auto; }
+  .mono{ font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; font-weight:500; }
+  .eyebrow{ display:flex; align-items:center; gap:12px; color:var(--muted); }
+  .eyebrow::before{ content:""; width:34px; height:1px; background:var(--hair-2); }
+
+  /* ---------- Device frame ---------- */
+  .device{ position:relative; background:var(--bezel); border-radius:13% / 6.4%; padding:2.6%;
+    box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.05); }
+  .device::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    box-shadow:inset 0 1px 2px rgba(255,255,255,.12), inset 0 0 0 1px rgba(0,0,0,.4); }
+  .device .scr{ border-radius:9%/4.6%; overflow:hidden; display:block; position:relative; }
+  .device img{ width:100%; display:block; }
+
+  /* ---------- Nav ---------- */
+  .nav{ position:sticky; top:0; z-index:100; background:color-mix(in srgb,var(--paper) 84%,transparent);
+    backdrop-filter:saturate(140%) blur(12px); border-bottom:1px solid var(--hair); }
+  .nav-in{ display:flex; align-items:center; justify-content:space-between; height:70px; }
+  .brand{ display:flex; align-items:center; gap:13px; text-decoration:none; }
+  .brand .glyph{ width:34px; height:34px; display:grid; place-items:center; background:var(--ink); color:var(--paper);
+    border-radius:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:16px;
+    letter-spacing:-.02em; line-height:1; }
+  .brand b{ font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:1.06rem; letter-spacing:-.01em; }
+  .nav-right{ display:flex; align-items:center; gap:22px; }
+  .nav-right a.link{ color:var(--muted); text-decoration:none; font-size:.92rem; transition:color .2s; }
+  .nav-right a.link:hover{ color:var(--ink); }
+  .theme-btn{ background:none; border:1px solid var(--hair-2); color:var(--muted); width:36px; height:36px;
+    border-radius:50%; cursor:pointer; display:grid; place-items:center; transition:color .2s,border-color .2s; }
+  .theme-btn:hover{ color:var(--ink); border-color:var(--ink); }
+  @media (max-width:640px){ .nav-right a.link{ display:none; } }
+
+  /* ---------- Section scaffolding ---------- */
+  .sec-label{ display:flex; align-items:center; gap:12px; color:var(--muted); margin-bottom:26px; }
+  h2.sec{ font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:clamp(2.1rem,5.4vw,3.4rem);
+    letter-spacing:-.03em; line-height:1.02; margin:0; text-wrap:balance; }
+
+  /* ---------- Featured app ---------- */
+  .featured{ padding:104px 0 96px; }
+  .feat-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:64px; align-items:center; }
+  @media (max-width:900px){ .feat-grid{ grid-template-columns:1fr; gap:56px; } }
+  .feat-badge{ display:inline-flex; align-items:center; gap:9px; background:var(--ink); color:var(--paper);
+    padding:8px 15px 8px 13px; border-radius:999px; font-size:.68rem; letter-spacing:.18em;
+    box-shadow:var(--shadow-sm); }
+  .feat-badge .pulse{ width:7px; height:7px; border-radius:50%; background:var(--paper);
+    animation:pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:.35;} 50%{opacity:1;} }
+  .feat-copy .appname{ font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:clamp(3rem,8vw,5.2rem); line-height:.92; letter-spacing:-.04em; margin:18px 0 0; }
+  .feat-copy .tagline{ font-family:"Bricolage Grotesque",sans-serif; font-weight:500; color:var(--muted);
+    font-size:clamp(1.3rem,3.2vw,1.7rem); letter-spacing:-.02em; margin:10px 0 0; }
+  .feat-copy .desc{ color:var(--ink-soft); font-size:1.12rem; max-width:42ch; margin:26px 0 0; }
+  .feat-copy .desc b{ font-weight:600; color:var(--ink); }
+  .meta-row{ display:flex; flex-wrap:wrap; gap:10px; margin:28px 0 0; }
+  .chip{ font-family:"JetBrains Mono",monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); border:1px solid var(--hair); border-radius:999px; padding:7px 13px; background:var(--surface); }
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin:34px 0 0; }
+  .btn{ display:inline-flex; align-items:center; gap:10px; text-decoration:none; font-weight:500; font-size:.98rem;
+    padding:14px 26px; border-radius:999px; transition:transform .2s,background .2s,color .2s,border-color .2s; }
+  .btn-primary{ background:var(--ink); color:var(--paper); }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{ border:1px solid var(--hair-2); color:var(--ink); }
+  .btn-ghost:hover{ background:var(--paper-2); border-color:var(--ink); }
+  .btn svg{ width:17px; height:17px; }
+
+  /* overlapping device stage */
+  .stage{ position:relative; padding:14px 0; display:flex; justify-content:center; }
+  .stage .phones{ position:relative; width:min(420px,100%); aspect-ratio:1/1.02; }
+  .stage .device{ position:absolute; width:64%; }
+  .stage .back{ top:0; right:4%; transform:rotate(4deg); opacity:.96; filter:saturate(.96); }
+  .stage .front{ bottom:0; left:2%; transform:rotate(-3deg); z-index:2; }
+  @media (prefers-reduced-motion: no-preference){
+    .stage .device{ transition:transform .5s cubic-bezier(.2,.7,.2,1); }
+    .stage:hover .back{ transform:rotate(6deg) translateY(-6px); }
+    .stage:hover .front{ transform:rotate(-4deg) translateY(6px); }
+  }
+  @media (max-width:900px){ .stage .phones{ width:min(380px,86%); } }
+
+  /* ---------- Apps being built ---------- */
+  .building{ padding:60px 0 96px; }
+  .build-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; margin-bottom:52px; }
+  .build-head p{ color:var(--muted); max-width:34ch; margin:0; text-align:right; }
+  @media (max-width:640px){ .build-head p{ text-align:left; } }
+  .build-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:820px){ .build-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:480px){ .build-grid{ grid-template-columns:1fr; } }
+  .tile{ position:relative; aspect-ratio:1/1; background:var(--surface); border:1px solid var(--hair);
+    border-radius:22px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:20px;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s; }
+  .tile .field{ position:absolute; inset:0; z-index:0; opacity:.5;
+    background-image:repeating-linear-gradient(45deg,transparent 0 11px,var(--hair) 11px 12px);
+    -webkit-mask-image:radial-gradient(circle at 50% 44%,#000 0%,transparent 70%);
+    mask-image:radial-gradient(circle at 50% 44%,#000 0%,transparent 70%); transition:opacity .35s; }
+  .tile > *{ position:relative; z-index:1; }
+  .tile .top{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .tile .num{ font-family:"JetBrains Mono",monospace; font-size:.72rem; letter-spacing:.12em; color:var(--muted); }
+  .tile .status{ font-family:"JetBrains Mono",monospace; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .tile .center{ position:absolute; inset:0; display:grid; place-items:center; z-index:1; }
+  .tile .plus{ width:48px; height:48px; border-radius:50%; border:1.5px dashed var(--hair-2); display:grid; place-items:center;
+    color:var(--muted); transition:transform .35s,border-color .35s,color .35s; }
+  .tile .plus svg{ width:20px; height:20px; }
+  .tile .foot b{ font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:1.02rem; display:block; }
+  .tile .foot span{ color:var(--muted); font-size:.86rem; }
+  .tile:hover{ transform:translateY(-6px); border-color:var(--hair-2); box-shadow:var(--shadow); }
+  .tile:hover .field{ opacity:.28; }
+  .tile:hover .plus{ transform:rotate(90deg) scale(1.05); border-color:var(--ink-soft); color:var(--ink-soft); }
+
+  /* ---------- About the developer ---------- */
+  .about{ padding:60px 0 40px; border-top:1px solid var(--hair); }
+  .about-grid{ display:grid; grid-template-columns:1fr .8fr; gap:64px; align-items:start; padding-top:14px; }
+  @media (max-width:820px){ .about-grid{ grid-template-columns:1fr; gap:40px; } }
+  .about h2{ font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:clamp(1.9rem,4.6vw,2.9rem);
+    letter-spacing:-.03em; line-height:1.04; margin:18px 0 0; text-wrap:balance; }
+  .about .body p{ color:var(--ink-soft); font-size:1.08rem; margin:0 0 18px; max-width:52ch; }
+  .about .body p b{ color:var(--ink); font-weight:600; }
+  .about-side{ font-size:.95rem; line-height:2; }
+  .about-side .row{ display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--hair); }
+  .about-side .row span:first-child{ color:var(--muted); }
+  .about-side .row span:last-child{ font-family:"JetBrains Mono",monospace; font-size:.82rem; }
+
+  /* ---------- Footer ---------- */
+  footer{ border-top:1px solid var(--hair); padding:56px 0 44px; margin-top:64px; }
+  .foot-grid{ display:flex; justify-content:space-between; align-items:flex-end; gap:30px; flex-wrap:wrap; }
+  .foot-grid h3{ font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(1.8rem,6vw,3rem);
+    letter-spacing:-.03em; margin:0; line-height:.94; }
+  .foot-grid p{ color:var(--muted); margin:12px 0 0; }
+  .foot-meta{ color:var(--muted); text-align:right; font-size:.9rem; line-height:1.9; }
+  .foot-meta a{ color:var(--ink); text-decoration:none; border-bottom:1px solid var(--hair-2); }
+  @media (max-width:560px){ .foot-meta{ text-align:left; } }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in{ opacity:1; transform:none; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="ToApps home">
+      <span class="glyph" aria-hidden="true">to</span>
+      <b>ToApps</b>
+    </a>
+    <div class="nav-right">
+      <a class="link" href="#building">Apps</a>
+      <a class="link" href="#about">About</a>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle dark and light theme" title="Toggle theme">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- FEATURED APP -->
+  <section class="featured wrap" id="featured">
+    <div class="feat-grid">
+      <div class="feat-copy reveal">
+        <div class="feat-badge mono"><span class="pulse" aria-hidden="true"></span>Featured app</div>
+        <h1 class="appname">ToEat</h1>
+        <p class="tagline">Your fridge, sorted.</p>
+        <p class="desc"><b>ToEat</b> turns a photo of what you already have into dinner — AI recipes, nutrition tracking and a week of meals planned in seconds. Made in Australia, free forever.</p>
+        <div class="meta-row" aria-hidden="false">
+          <span class="chip">iOS &middot; Android</span>
+          <span class="chip">Free forever</span>
+          <span class="chip">Melbourne</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://toeat.com.au" target="_blank" rel="noopener">
+            Visit toeat.com.au
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </a>
+          <a class="btn btn-ghost" href="#building">See what&rsquo;s next</a>
+        </div>
+      </div>
+
+      <div class="stage reveal" aria-label="ToEat app screenshots">
+        <div class="phones">
+          <div class="device front"><span class="scr"><img src="assets/toeat-health.jpg" alt="ToEat daily health dashboard with calories and macros"></span></div>
+          <div class="device back"><span class="scr"><img src="assets/toeat-recipes.jpg" alt="ToEat recipe suggestions from your fridge"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPS BEING BUILT -->
+  <section class="building wrap" id="building">
+    <div class="build-head">
+      <div class="reveal">
+        <div class="sec-label mono">The roadmap</div>
+        <h2 class="sec">Apps being built.</h2>
+      </div>
+      <p class="reveal">ToEat is the first of the studio. Each frame is reserved for what ToApps ships next.</p>
+    </div>
+    <div class="build-grid" id="buildGrid"></div>
+  </section>
+
+  <!-- ABOUT THE DEVELOPER -->
+  <section class="about" id="about">
+    <div class="wrap about-grid">
+      <div class="reveal">
+        <div class="sec-label mono">About the developer</div>
+        <h2>One person, a small stack of tools and a passion for AI.</h2>
+      </div>
+      <div class="reveal">
+        <div class="body">
+          <p>ToApps is a one-person app development business based in Melbourne, Australia. Everything here is <b>designed, built and shipped by one developer</b>.</p>
+          <p>All apps are specifically designed to improve different areas of life. No subscription, no credit card &mdash; just real working apps that make a big difference in life.</p>
+        </div>
+        <div class="about-side" style="margin-top:26px">
+          <div class="row"><span>Based in</span><span>Melbourne, AU</span></div>
+          <div class="row"><span>Discipline</span><span>Design + Build</span></div>
+          <div class="row"><span>Building since</span><span>2026</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="wrap">
+    <div class="foot-grid">
+      <div class="reveal">
+        <h3>Small apps,<br>made with care.</h3>
+        <p>ToApps designs focused software in black and white.</p>
+      </div>
+      <div class="foot-meta reveal">
+        <a href="https://toeat.com.au" target="_blank" rel="noopener">toeat.com.au</a><br>
+        <span style="opacity:.7">&copy; 2026 ToApps &middot; Melbourne</span>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // Build the "apps being built" grid
+  const apps = [
+    {name:"ToPlant", note:"In progress", status:"Building"},
+    {name:"ToBe",    note:"In design",   status:"Design"},
+    {name:"Coming soon", note:"Concept", status:"Concept"},
+    {name:"Coming soon", note:"Concept", status:"Concept"},
+    {name:"Coming soon", note:"Concept", status:"Concept"},
+    {name:"Coming soon", note:"Concept", status:"Concept"}
+  ];
+  const grid = document.getElementById('buildGrid');
+  apps.forEach((a,i)=>{
+    const n=String(i+2).padStart(2,'0');
+    const el=document.createElement('article');
+    el.className='tile reveal';
+    el.style.transitionDelay=(i%3)*60+'ms';
+    el.setAttribute('aria-label',a.name+', '+a.note);
+    el.innerHTML=`
+      <div class="field" aria-hidden="true"></div>
+      <div class="top"><span class="num">${n}</span><span class="status">${a.status}</span></div>
+      <div class="center" aria-hidden="true"><span class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></div>
+      <div class="foot"><b>${a.name}</b><span>${a.note}</span></div>`;
+    grid.appendChild(el);
+  });
+
+  // Theme toggle
+  const root=document.documentElement, btn=document.getElementById('themeBtn');
+  try{ const s=localStorage.getItem('mono-theme'); if(s) root.setAttribute('data-theme',s); }catch(e){}
+  btn.addEventListener('click',()=>{
+    const cur=root.getAttribute('data-theme');
+    const isDark=cur==='dark'||(!cur&&matchMedia('(prefers-color-scheme: dark)').matches);
+    const next=isDark?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{ localStorage.setItem('mono-theme',next); }catch(e){}
+  });
+
+  // Reveal on scroll
+  const io=new IntersectionObserver((es)=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }); },{threshold:.14});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
