@@ -137,7 +137,9 @@
   @media (max-width:480px){ .build-grid{ grid-template-columns:1fr; } }
   .tile{ position:relative; aspect-ratio:1/1; background:var(--surface); border:1px solid var(--hair);
     border-radius:22px; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; padding:20px;
+    color:inherit; text-decoration:none;
     transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .35s,box-shadow .35s; }
+  .tile.is-link{ cursor:pointer; }
   .tile .field{ position:absolute; inset:0; z-index:0; opacity:.5;
     background-image:repeating-linear-gradient(45deg,transparent 0 11px,var(--hair) 11px 12px);
     -webkit-mask-image:radial-gradient(circle at 50% 44%,#000 0%,transparent 70%);
@@ -151,7 +153,7 @@
     color:var(--muted); transition:transform .35s,border-color .35s,color .35s; }
   .tile .plus svg{ width:20px; height:20px; }
   .tile .foot b{ font-family:"Bricolage Grotesque",sans-serif; font-weight:600; font-size:1.02rem; display:block; }
-  .tile .foot span{ color:var(--muted); font-size:.86rem; }
+  .tile .foot span{ color:var(--muted); font-size:.86rem; display:block; margin-top:5px; }
   .tile:hover{ transform:translateY(-6px); border-color:var(--hair-2); box-shadow:var(--shadow); }
   .tile:hover .field{ opacity:.28; }
   .tile:hover .plus{ transform:rotate(90deg) scale(1.05); border-color:var(--ink-soft); color:var(--ink-soft); }
@@ -300,28 +302,30 @@
 <script>
   // Build the "apps being built" grid
   const apps = [
-    {name:"Trainr",  note:"In progress", status:"Building", img:"assets/trainr.jpg"},
-    {name:"ToScan",  note:"In progress", status:"Building", img:"assets/toscan.jpg"},
-    {name:"ToDo",    note:"In progress", status:"Building"},
-    {name:"ToBe",    note:"In progress", status:"Building"},
-    {name:"ToCam",   note:"In progress", status:"Building"},
-    {name:"ToWorld", note:"In progress", status:"Building"}
+    {name:"Trainr",  status:"Live", img:"assets/trainr.jpg", url:"https://trainr.com.au"},
+    {name:"ToScan",  status:"Building", img:"assets/toscan.jpg"},
+    {name:"ToDo",    status:"Building"},
+    {name:"ToBe",    status:"Building"},
+    {name:"ToCam",   status:"Building"},
+    {name:"ToWorld", status:"Building"}
   ];
   const grid = document.getElementById('buildGrid');
   apps.forEach((a,i)=>{
     const n=String(i+2).padStart(2,'0');
-    const el=document.createElement('article');
-    el.className='tile reveal'+(a.img?' has-img':'');
+    const el=document.createElement(a.url?'a':'article');
+    el.className='tile reveal'+(a.img?' has-img':'')+(a.url?' is-link':'');
+    if(a.url){ el.href=a.url; el.target='_blank'; el.rel='noopener'; }
     el.style.transitionDelay=(i%3)*60+'ms';
-    el.setAttribute('aria-label',a.name+', '+a.note);
+    el.setAttribute('aria-label',a.name+(a.url?', visit website':', '+a.status));
+    const noteEl = a.note?`<span>${a.note}</span>`:'';
     const inner = a.img
       ? `<img class="photo" src="${a.img}" alt="${a.name} preview">
       <div class="top"><span class="num">${n}</span><span class="status">${a.status}</span></div>
-      <div class="foot"><b>${a.name}</b><span>${a.note}</span></div>`
+      <div class="foot"><b>${a.name}</b>${noteEl}</div>`
       : `<div class="field" aria-hidden="true"></div>
       <div class="top"><span class="num">${n}</span><span class="status">${a.status}</span></div>
       <div class="center" aria-hidden="true"><span class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></div>
-      <div class="foot"><b>${a.name}</b><span>${a.note}</span></div>`;
+      <div class="foot"><b>${a.name}</b>${noteEl}</div>`;
     el.innerHTML=inner;
     grid.appendChild(el);
   });
