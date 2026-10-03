@@ -156,6 +156,20 @@
   .tile:hover .field{ opacity:.28; }
   .tile:hover .plus{ transform:rotate(90deg) scale(1.05); border-color:var(--ink-soft); color:var(--ink-soft); }
 
+  /* image-filled tile */
+  .tile.has-img{ border-color:transparent; }
+  .tile .photo{ position:absolute; inset:0; z-index:0; width:100%; height:100%; object-fit:cover; display:block;
+    filter:grayscale(1) contrast(1.02); transition:transform .5s cubic-bezier(.2,.7,.2,1),filter .5s; }
+  .tile.has-img::before{ content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(180deg,rgba(10,8,6,.5) 0%,rgba(10,8,6,0) 34%,rgba(10,8,6,.12) 60%,rgba(10,8,6,.82) 100%); }
+  .tile.has-img .top .num,
+  .tile.has-img .top .status,
+  .tile.has-img .foot b,
+  .tile.has-img .foot span{ color:#F4F1EB; }
+  .tile.has-img .foot span{ color:rgba(244,241,235,.72); }
+  .tile.has-img:hover{ box-shadow:var(--shadow); }
+  .tile.has-img:hover .photo{ transform:scale(1.05); filter:grayscale(.75) contrast(1.04); }
+
   /* ---------- About the developer ---------- */
   .about{ padding:60px 0 40px; border-top:1px solid var(--hair); }
   .about-grid{ display:grid; grid-template-columns:1fr .8fr; gap:64px; align-items:start; padding-top:14px; }
@@ -286,25 +300,29 @@
 <script>
   // Build the "apps being built" grid
   const apps = [
-    {name:"ToPlant", note:"In progress", status:"Building"},
-    {name:"ToBe",    note:"In design",   status:"Design"},
-    {name:"Coming soon", note:"Concept", status:"Concept"},
-    {name:"Coming soon", note:"Concept", status:"Concept"},
-    {name:"Coming soon", note:"Concept", status:"Concept"},
-    {name:"Coming soon", note:"Concept", status:"Concept"}
+    {name:"Trainr",  note:"In progress", status:"Building", img:"assets/trainr.jpg"},
+    {name:"ToScan",  note:"In progress", status:"Building", img:"assets/toscan.jpg"},
+    {name:"ToDo",    note:"In progress", status:"Building"},
+    {name:"ToBe",    note:"In progress", status:"Building"},
+    {name:"ToCam",   note:"In progress", status:"Building"},
+    {name:"ToWorld", note:"In progress", status:"Building"}
   ];
   const grid = document.getElementById('buildGrid');
   apps.forEach((a,i)=>{
     const n=String(i+2).padStart(2,'0');
     const el=document.createElement('article');
-    el.className='tile reveal';
+    el.className='tile reveal'+(a.img?' has-img':'');
     el.style.transitionDelay=(i%3)*60+'ms';
     el.setAttribute('aria-label',a.name+', '+a.note);
-    el.innerHTML=`
-      <div class="field" aria-hidden="true"></div>
+    const inner = a.img
+      ? `<img class="photo" src="${a.img}" alt="${a.name} preview">
+      <div class="top"><span class="num">${n}</span><span class="status">${a.status}</span></div>
+      <div class="foot"><b>${a.name}</b><span>${a.note}</span></div>`
+      : `<div class="field" aria-hidden="true"></div>
       <div class="top"><span class="num">${n}</span><span class="status">${a.status}</span></div>
       <div class="center" aria-hidden="true"><span class="plus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></div>
       <div class="foot"><b>${a.name}</b><span>${a.note}</span></div>`;
+    el.innerHTML=inner;
     grid.appendChild(el);
   });
 
